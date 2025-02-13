@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virus Alert</title>
+  <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Great+Vibes&display=swap');
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background: #fff0f6;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
+        }
+        
+        .dark-mode {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        #dark-mode-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff7eb3;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        #letter {
+            display: none;
+            font-size: 1.5em;
+            line-height: 1.5;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+            border-radius: 15px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            color: white;
+            max-width: 90%;
+            margin: auto;
+            white-space: pre-wrap;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            color: red;
+            font-size: 1.5rem;
+            opacity: 0.8;
+            animation: float 5s linear infinite;
+        }
+
+        @keyframes float {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-100vh); opacity: 0; }
+        }
+
+        #custom-alert {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.7);
+            text-align: center;
+            font-size: 18px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            max-width: 90%;
+            color: black;
+        }
+
+        .dark-mode #custom-alert {
+            background: #333;
+            color: white;
+        }
+
+        #custom-alert.show { opacity: 1; }
+
+        #custom-alert p { font-family: 'Courier New', monospace; }
+
+        #custom-alert button {
+            margin-top: 10px;
+            padding: 15px;
+            border: none;
+            background: pink;
+            color: white;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 1.2em;
+            position: relative;
+        }
+
+        .moving-no {
+            position: absolute;
+            transition: transform 0.2s ease-in-out;
+        }
+  </style>
+</head>
+<body>
+  <button id="dark-mode-toggle">Toggle Dark Mode</button>
+  <div id="letter"></div>
+  <div id="custom-alert">
+    <p id="alert-message"></p>
+    <div id="button-container"></div>
+  </div>
+
+  <script>
+    const messages = [
+        "Warning! Suspicious activity detected!",
+        "System Error: Heartbeat.exe is running too fast!",
+        "Malware Alert: You've infected my thoughts!",
+        "Warning: Unstoppable love detected!",
+        "Final Alert: Will you be my Valentine?"
+    ];
+    
+    let index = 0;
+    
+    function showCustomAlert() {
+        document.getElementById("alert-message").innerText = messages[index];
+        if (index === messages.length - 1) {
+            document.getElementById("button-container").innerHTML = 
+                '<button onclick="nextAlert()">Yes</button> <button id="no-button" class="moving-no">No</button>';
+            document.getElementById("no-button").addEventListener("mousemove", moveNo);
+        } else {
+            document.getElementById("button-container").innerHTML = '<button onclick="nextAlert()">OK</button>';
+        }
+        document.getElementById("custom-alert").classList.add("show");
+        document.getElementById("custom-alert").style.display = "block";
+    }
+    
+    function moveNo(event) {
+        let button = event.target;
+        let x = Math.random() * (window.innerWidth - 100);
+        let y = Math.random() * (window.innerHeight - 50);
+        button.style.transform = `translate(${x}px, ${y}px)`;
+    }
+    
+    function nextAlert() {
+        document.getElementById("custom-alert").classList.remove("show");
+        setTimeout(() => {
+            document.getElementById("custom-alert").style.display = "none";
+            index++;
+            if (index < messages.length) {
+                setTimeout(showCustomAlert, 500);
+            } else {
+                revealLetter();
+            }
+        }, 500);
+    }
+    
+    function revealLetter() {
+        const letter = document.getElementById("letter");
+        letter.style.display = "block";
+        letter.style.opacity = "1";
+
+        let text = "Hello, babyyyy!!!\nHappy Valentines ❤️\nI know I rarely say this to you, but I LOVE YOU SO MUCH BABY! You're probably the best thing that has happened to me this year (oo this year agad!). Every moment with you was very special to me. I super duper thank you for all the memories that we've made and hopefully we can create more memorable memories. You know, this would be my first Valentines with someone I love and I am glad na ikaw yun. I love how we just complement each other. I love how you make me feel good about myself. I love how you're very supportive of me! I hope that you feel that your efforts are reciprocated because I'm really trying to :(. Although, apakagastos naten everytime we go to a date, I'm really enjoying your company. Lastly, sorry if I did not prepare a Valentine's gift for you. I'm really sorry. I'll make it up to you!!! Thank you for everything babyyy! I LOVE YOU SO SO SO MUCH! mwamwamawmawmamwa\n\nYour one and only,\nAmir/Hanz/Jo/Baby Mo";
+        
+        let i = 0;
+        letter.innerHTML = "";
+
+        startFloatingHearts(); // Start hearts immediately
+
+        function typeLetter() {
+            if (i < text.length) {
+                letter.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeLetter, 50);
+            }
+        }
+
+        typeLetter();
+    }
+
+    function startFloatingHearts() {
+        setInterval(createHeart, 300);
+    }
+
+    function createHeart() {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerHTML = "❤️";
+        document.body.appendChild(heart);
+
+        let x = Math.random() * window.innerWidth;
+        let size = Math.random() * 20 + 10;
+        let duration = Math.random() * 5 + 3;
+
+        heart.style.left = `${x}px`;
+        heart.style.bottom = `0px`;
+        heart.style.fontSize = `${size}px`;
+        heart.style.animationDuration = `${duration}s`;
+
+        setTimeout(() => {
+            heart.remove();
+        }, duration * 1000);
+    }
+
+    document.getElementById("dark-mode-toggle").addEventListener("click", function() {
+        document.body.classList.toggle("dark-mode");
+    });
+    
+    window.onload = showCustomAlert;
+  </script>
+</body>
+</html>
